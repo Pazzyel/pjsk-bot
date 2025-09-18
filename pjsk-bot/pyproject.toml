@@ -1,0 +1,2 @@
+[tool.nonebot]
+plugin_dirs = ["start-bot/plugins"]
