@@ -1,9 +1,6 @@
 import base64
-from mailbox import Message
-import httpx
 from nonebot import get_driver
 from nonebot.plugin import PluginMetadata, on_command
-from nonebot.params import CommandArg
 import requests
 from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Event
 
