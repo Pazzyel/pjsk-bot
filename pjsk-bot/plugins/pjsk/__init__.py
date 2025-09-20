@@ -50,6 +50,38 @@ async def handle_chart(bot: Bot, event: Event):
     else:
         await chart.send("发生错误")
 
+jacket = on_command("pjsk_jacket")
+@jacket.handle()
+async def handle_jacket(bot: Bot, event: Event):
+    # 解析参数
+    command = str(event.get_message()).strip()
+    if command.startswith("/pjsk_jacket"):
+        text = command[len("/pjsk_jacket"):].strip()
+    else:
+        await jacket.finish("命令错误")
+    
+    args = text.split()
+    if len(args) != 1:
+        await jacket.finish("参数错误")
+        return
+    
+    # 请求服务
+    id = args[0]
+    paramemters = {
+        "id": id
+    }
+    resp = requests.get(f"http://localhost:9470/pjsk/jackets", params=paramemters)
+    type = resp.headers['Content-Type']
+
+    # 处理响应
+    if type == "image/png":
+        img = resp.content
+        await jacket.send(MessageSegment.image("base64://" + base64.b64encode(img).decode()))
+    elif type.startswith("application/json"):
+        await jacket.send(resp.json()["error"])
+    else:
+        await jacket.send("发生错误")
+
 hello = on_command("pjsk_hello")
 @hello.handle()
 async def handle_hello():

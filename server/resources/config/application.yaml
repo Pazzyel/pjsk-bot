@@ -1,0 +1,10 @@
+server:
+  port: 9470
+
+pjsk:
+  charts:
+    request_path: https://sdvx.in/prsk/obj/data
+    save_path: resources/images/charts
+  jackets:
+    request_path: https://sdvx.in/prsk/jacket/
+    save_path: resources/images/jackets

@@ -12,14 +12,26 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"server/config"
 )
 
 type PJSKService struct {
+	pjskConfig *config.PJSKConfig
+}
+
+func (p *PJSKService) Construct(cfg *config.PJSKConfig) {
+	p.pjskConfig = cfg
 }
 
 func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 	// 先检查文件是否存在
-	dir := "resources/images"
+	dir := p.pjskConfig.PJSK.Charts.SavePath
+	// 创建目录（如果不存在）
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return nil, errors.New("创建目录失败: " + err.Error())
+	}
+	// 文件名格式：{id}{level}.png，例如 001exp.png
 	fileName := id + level + ".png"
 	path := filepath.Join(dir, fileName)
 	exists, err := checkFile(path)
@@ -41,7 +53,7 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 	}
 
 	// 处理谱面图
-	data, err := http.Get("https://sdvx.in/prsk/obj/data" + id + level + ".png")
+	data, err := http.Get(p.pjskConfig.PJSK.Charts.RequestPath + id + level + ".png")
 	if err != nil {
 		return nil, err//ors.New("获取谱面图失败")
 	}
@@ -101,6 +113,7 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 	return mergeBytes, nil
 }
 
+// 检查难度是否合法
 func checkLevel(level string) bool {
 	switch level {
 	case "exp":
@@ -114,8 +127,8 @@ func checkLevel(level string) bool {
 	}
 }
 
+// 检查文件是否存在
 func checkFile(path string) (bool, error) {
-	// 检查文件是否存在
 	if _, err := os.Stat(path); err == nil {
 		fmt.Println("文件存在:", path)
 		return true, nil
@@ -142,4 +155,57 @@ func transparentToBlack(srcPtr *image.RGBA) {
 			} 
 		}
 	}
+}
+
+
+
+// 获取歌曲封面
+func (p *PJSKService) GetJackets(id string) ([]byte, error) {
+	// 先检查文件是否存在
+	dir := p.pjskConfig.PJSK.Jackets.SavePath
+	// 创建目录（如果不存在）
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return nil, errors.New("创建目录失败: " + err.Error())
+	}
+
+	// 文件名格式：{id}.png，例如 001.png
+	fileName := id + ".png"
+	path := filepath.Join(dir, fileName)
+	exists, err := checkFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if exists {
+		// 读取文件内容
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	}
+
+	// 文件不存在则从网络获取
+	data, err := http.Get(p.pjskConfig.PJSK.Jackets.RequestPath + id + ".png")
+	if err != nil {
+		return nil, err//ors.New("获取封面图失败")
+	}
+	defer data.Body.Close()
+
+	// 处理404
+	if data.StatusCode == 404 {
+		return nil, errors.New("未找到该封面，请检查ID是否正确")
+	}
+	jacket, err := io.ReadAll(data.Body)
+	if err != nil {
+		return nil, err//ors.New("读取封面图失败")
+	}
+
+	// 将图片保存到本地
+	err = os.WriteFile(path, jacket, 0644)
+	if err != nil {
+		return nil, errors.New("保存图片失败")
+	}
+	return jacket, nil
 }
