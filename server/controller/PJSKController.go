@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"pjsk-bot/server/config"
 	"pjsk-bot/server/service"
@@ -96,6 +97,7 @@ func (p *PJSKController) searchInfos() {
 			})
 			return
 		}
+		log.Println(req)
 
 		result, total, err := p.pjskService.SearchMusicInfos(service.SearchOptions{
 			Title:    req.Title,

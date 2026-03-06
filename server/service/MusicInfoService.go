@@ -26,6 +26,33 @@ type MusicCategory struct {
 	MusicCategoryName string `json:"musicCategoryName"`
 }
 
+type MusicCategories []MusicCategory
+
+func (m *MusicCategories) UnmarshalJSON(data []byte) error {
+	// categories有两种格式
+	//[{ "musicCategoryName": "mv" }]
+	//["mv"]
+	//一种是字典，另一种直接是字符串
+	//都要可以解析
+	var asObjects []MusicCategory
+	if err := json.Unmarshal(data, &asObjects); err == nil {
+		*m = asObjects
+		return nil
+	}
+
+	var asStrings []string
+	if err := json.Unmarshal(data, &asStrings); err == nil {
+		categories := make([]MusicCategory, 0, len(asStrings))
+		for _, item := range asStrings {
+			categories = append(categories, MusicCategory{MusicCategoryName: item})
+		}
+		*m = categories
+		return nil
+	}
+
+	return errors.New("invalid categories format")
+}
+
 type DifficultyInfo struct {
 	PlayLevel          int `json:"playLevel"`
 	ReleaseConditionID int `json:"releaseConditionId"`
@@ -36,7 +63,7 @@ type MusicInfo struct {
 	ID                 int                       `json:"id"`
 	Seq                int                       `json:"seq"`
 	ReleaseConditionID int                       `json:"releaseConditionId"`
-	Categories         []MusicCategory           `json:"categories"`
+	Categories         MusicCategories           `json:"categories"`
 	Title              string                    `json:"title"`
 	ChineseTitle       string                    `json:"chinese_title"`
 	Pronunciation      string                    `json:"pronunciation"`
@@ -129,12 +156,65 @@ func (p *PJSKService) UpdateMusicInfos() (int, error) {
 
 func (p *PJSKService) SearchMusicInfos(options SearchOptions) ([]MusicInfo, int64, error) {
 	must := make([]map[string]interface{}, 0)
+	//o对标题的查询需要构建比较完备的打分机制，完整查询词稳定靠前
+	//match_phrase(chinese_title)，boost=20
+	//match_phrase(title)，boost=15
+	//match(... operator=and) 中权重
+	//普通 match 低权重兜底
 	if options.Title != "" {
 		must = append(must, map[string]interface{}{
 			"bool": map[string]interface{}{
 				"should": []map[string]interface{}{
-					{"match": map[string]string{"title": options.Title}},
-					{"match": map[string]string{"chinese_title": options.Title}},
+					{
+						"match_phrase": map[string]interface{}{
+							"chinese_title": map[string]interface{}{
+								"query": options.Title,
+								"boost": 20,
+							},
+						},
+					},
+					{
+						"match_phrase": map[string]interface{}{
+							"title": map[string]interface{}{
+								"query": options.Title,
+								"boost": 15,
+							},
+						},
+					},
+					{
+						"match": map[string]interface{}{
+							"chinese_title": map[string]interface{}{
+								"query":    options.Title,
+								"operator": "and",
+								"boost":    8,
+							},
+						},
+					},
+					{
+						"match": map[string]interface{}{
+							"title": map[string]interface{}{
+								"query":    options.Title,
+								"operator": "and",
+								"boost":    6,
+							},
+						},
+					},
+					{
+						"match": map[string]interface{}{
+							"chinese_title": map[string]interface{}{
+								"query": options.Title,
+								"boost": 2,
+							},
+						},
+					},
+					{
+						"match": map[string]interface{}{
+							"title": map[string]interface{}{
+								"query": options.Title,
+								"boost": 1,
+							},
+						},
+					},
 				},
 				"minimum_should_match": 1,
 			},
@@ -158,6 +238,10 @@ func (p *PJSKService) SearchMusicInfos(options SearchOptions) ([]MusicInfo, int6
 
 	query := map[string]interface{}{
 		"track_total_hits": true,
+		"sort": []map[string]interface{}{
+			{"_score": map[string]string{"order": "desc"}},
+			{"id": map[string]string{"order": "asc"}},
+		},
 	}
 	if len(must) == 0 {
 		query["query"] = map[string]interface{}{"match_all": map[string]interface{}{}}

@@ -1,0 +1,548 @@
+{
+  "data": [
+    {
+      "id": 6,
+      "seq": 1200103,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "mv_2d"
+        }
+      ],
+      "title": "ヒバナ -Reloaded-",
+      "chinese_title": "火花 -重制版-",
+      "pronunciation": "ひばなりろーでっど",
+      "creatorArtistId": 4,
+      "lyricist": "DECO*27",
+      "composer": "DECO*27",
+      "arranger": "Rockwell",
+      "dancerCount": 3,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_006",
+      "publishedAt": 1560148031000,
+      "releasedAt": 1501772400000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "append": {
+          "playLevel": 34,
+          "releaseConditionId": 0,
+          "totalNoteCount": 1351
+        },
+        "easy": {
+          "playLevel": 9,
+          "releaseConditionId": 0,
+          "totalNoteCount": 198
+        },
+        "expert": {
+          "playLevel": 28,
+          "releaseConditionId": 0,
+          "totalNoteCount": 808
+        },
+        "hard": {
+          "playLevel": 19,
+          "releaseConditionId": 0,
+          "totalNoteCount": 568
+        },
+        "master": {
+          "playLevel": 32,
+          "releaseConditionId": 0,
+          "totalNoteCount": 1060
+        },
+        "normal": {
+          "playLevel": 14,
+          "releaseConditionId": 0,
+          "totalNoteCount": 394
+        }
+      }
+    },
+    {
+      "id": 137,
+      "seq": 1106601,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "image"
+        }
+      ],
+      "title": "花を唄う",
+      "chinese_title": "歌颂花束",
+      "pronunciation": "はなをうたう",
+      "creatorArtistId": 76,
+      "lyricist": "シノ",
+      "composer": "シノ",
+      "arranger": "シノ",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_137",
+      "publishedAt": 1619416800000,
+      "releasedAt": 1611759600000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 0,
+          "totalNoteCount": 157
+        },
+        "expert": {
+          "playLevel": 25,
+          "releaseConditionId": 0,
+          "totalNoteCount": 807
+        },
+        "hard": {
+          "playLevel": 19,
+          "releaseConditionId": 0,
+          "totalNoteCount": 565
+        },
+        "master": {
+          "playLevel": 30,
+          "releaseConditionId": 0,
+          "totalNoteCount": 878
+        },
+        "normal": {
+          "playLevel": 12,
+          "releaseConditionId": 0,
+          "totalNoteCount": 298
+        }
+      }
+    },
+    {
+      "id": 433,
+      "seq": 1135801,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "original"
+        }
+      ],
+      "title": "ヒアソビ",
+      "chinese_title": "玩火",
+      "pronunciation": "ひあそび",
+      "creatorArtistId": 220,
+      "lyricist": "かめりあ",
+      "composer": "かめりあ",
+      "arranger": "かめりあ",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_433",
+      "publishedAt": 1704175200000,
+      "releasedAt": 1647097200000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 9,
+          "releaseConditionId": 0,
+          "totalNoteCount": 217
+        },
+        "expert": {
+          "playLevel": 27,
+          "releaseConditionId": 0,
+          "totalNoteCount": 1053
+        },
+        "hard": {
+          "playLevel": 18,
+          "releaseConditionId": 0,
+          "totalNoteCount": 655
+        },
+        "master": {
+          "playLevel": 31,
+          "releaseConditionId": 0,
+          "totalNoteCount": 1116
+        },
+        "normal": {
+          "playLevel": 13,
+          "releaseConditionId": 0,
+          "totalNoteCount": 382
+        }
+      }
+    },
+    {
+      "id": 74,
+      "seq": 1603201,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "mv"
+        },
+        {
+          "musicCategoryName": "mv_2d"
+        }
+      ],
+      "title": "独りんぼエンヴィー",
+      "chinese_title": "孑然妒火",
+      "pronunciation": "ひとりんぼえんヴぃー",
+      "creatorArtistId": 38,
+      "lyricist": "koyori",
+      "composer": "koyori",
+      "arranger": "koyori",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_074",
+      "publishedAt": 1607925600000,
+      "releasedAt": 1354114800000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 0,
+          "totalNoteCount": 74
+        },
+        "expert": {
+          "playLevel": 22,
+          "releaseConditionId": 0,
+          "totalNoteCount": 544
+        },
+        "hard": {
+          "playLevel": 16,
+          "releaseConditionId": 0,
+          "totalNoteCount": 356
+        },
+        "master": {
+          "playLevel": 26,
+          "releaseConditionId": 0,
+          "totalNoteCount": 589
+        },
+        "normal": {
+          "playLevel": 11,
+          "releaseConditionId": 0,
+          "totalNoteCount": 171
+        }
+      }
+    },
+    {
+      "id": 311,
+      "seq": 1123501,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "image"
+        }
+      ],
+      "title": "夜明けと蛍",
+      "chinese_title": "黎明与萤火",
+      "pronunciation": "よあけとほたる",
+      "creatorArtistId": 39,
+      "lyricist": "n-buna",
+      "composer": "n-buna",
+      "arranger": "n-buna",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_311",
+      "publishedAt": 1673330400000,
+      "releasedAt": 1415631600000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "append": {
+          "playLevel": 25,
+          "releaseConditionId": 0,
+          "totalNoteCount": 717
+        },
+        "easy": {
+          "playLevel": 5,
+          "releaseConditionId": 0,
+          "totalNoteCount": 162
+        },
+        "expert": {
+          "playLevel": 22,
+          "releaseConditionId": 0,
+          "totalNoteCount": 691
+        },
+        "hard": {
+          "playLevel": 15,
+          "releaseConditionId": 0,
+          "totalNoteCount": 457
+        },
+        "master": {
+          "playLevel": 26,
+          "releaseConditionId": 0,
+          "totalNoteCount": 852
+        },
+        "normal": {
+          "playLevel": 10,
+          "releaseConditionId": 0,
+          "totalNoteCount": 273
+        }
+      }
+    },
+    {
+      "id": 497,
+      "seq": 2440201,
+      "releaseConditionId": 10,
+      "categories": [
+        {
+          "musicCategoryName": "mv_2d"
+        }
+      ],
+      "title": "烈火",
+      "chinese_title": "",
+      "pronunciation": "れっか",
+      "creatorArtistId": 239,
+      "lyricist": "niki",
+      "composer": "niki",
+      "arranger": "niki",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_497",
+      "publishedAt": 1714456800000,
+      "releasedAt": 1714402800000,
+      "fillerSec": 8.543999671936035,
+      "infos": null,
+      "isNewlyWrittenMusic": true,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 0,
+          "totalNoteCount": 305
+        },
+        "expert": {
+          "playLevel": 23,
+          "releaseConditionId": 0,
+          "totalNoteCount": 786
+        },
+        "hard": {
+          "playLevel": 16,
+          "releaseConditionId": 0,
+          "totalNoteCount": 574
+        },
+        "master": {
+          "playLevel": 27,
+          "releaseConditionId": 0,
+          "totalNoteCount": 948
+        },
+        "normal": {
+          "playLevel": 12,
+          "releaseConditionId": 0,
+          "totalNoteCount": 354
+        }
+      }
+    },
+    {
+      "id": 241,
+      "seq": 1216801,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "original"
+        }
+      ],
+      "title": "アサガオの散る頃に",
+      "chinese_title": "在牵牛花凋谢之时",
+      "pronunciation": "あさがおのちるころに",
+      "creatorArtistId": 129,
+      "lyricist": "ぷす(fromツユ)",
+      "composer": "ぷす(fromツユ)",
+      "arranger": "ぷす(fromツユ)",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_241",
+      "publishedAt": 1653285600000,
+      "releasedAt": 1426345200000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 1,
+          "totalNoteCount": 210
+        },
+        "expert": {
+          "playLevel": 21,
+          "releaseConditionId": 1,
+          "totalNoteCount": 748
+        },
+        "hard": {
+          "playLevel": 16,
+          "releaseConditionId": 1,
+          "totalNoteCount": 478
+        },
+        "master": {
+          "playLevel": 26,
+          "releaseConditionId": 40241,
+          "totalNoteCount": 832
+        },
+        "normal": {
+          "playLevel": 12,
+          "releaseConditionId": 1,
+          "totalNoteCount": 273
+        }
+      }
+    },
+    {
+      "id": 537,
+      "seq": 1450901,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "mv"
+        }
+      ],
+      "title": "花に風",
+      "chinese_title": "",
+      "pronunciation": "はなにかぜ",
+      "creatorArtistId": 11,
+      "lyricist": "バルーン",
+      "composer": "バルーン",
+      "arranger": "バルーン",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_537",
+      "publishedAt": 1744092000000,
+      "releasedAt": 1675954800000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 0,
+          "totalNoteCount": 194
+        },
+        "expert": {
+          "playLevel": 24,
+          "releaseConditionId": 0,
+          "totalNoteCount": 755
+        },
+        "hard": {
+          "playLevel": 17,
+          "releaseConditionId": 0,
+          "totalNoteCount": 625
+        },
+        "master": {
+          "playLevel": 28,
+          "releaseConditionId": 0,
+          "totalNoteCount": 960
+        },
+        "normal": {
+          "playLevel": 13,
+          "releaseConditionId": 0,
+          "totalNoteCount": 289
+        }
+      }
+    },
+    {
+      "id": 557,
+      "seq": 1446501,
+      "releaseConditionId": 5,
+      "categories": [
+        {
+          "musicCategoryName": "image"
+        }
+      ],
+      "title": "花溺れ",
+      "chinese_title": "",
+      "pronunciation": "はなおぼれ",
+      "creatorArtistId": 266,
+      "lyricist": "shikisai",
+      "composer": "shikisai",
+      "arranger": "shikisai",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_557",
+      "publishedAt": 1734933600000,
+      "releasedAt": 1711551600000,
+      "fillerSec": 9,
+      "infos": null,
+      "isNewlyWrittenMusic": false,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 6,
+          "releaseConditionId": 0,
+          "totalNoteCount": 145
+        },
+        "expert": {
+          "playLevel": 26,
+          "releaseConditionId": 0,
+          "totalNoteCount": 780
+        },
+        "hard": {
+          "playLevel": 17,
+          "releaseConditionId": 0,
+          "totalNoteCount": 520
+        },
+        "master": {
+          "playLevel": 29,
+          "releaseConditionId": 0,
+          "totalNoteCount": 895
+        },
+        "normal": {
+          "playLevel": 12,
+          "releaseConditionId": 0,
+          "totalNoteCount": 231
+        }
+      }
+    },
+    {
+      "id": 695,
+      "seq": 2258201,
+      "releaseConditionId": 10,
+      "categories": [
+        {
+          "musicCategoryName": "mv_2d"
+        }
+      ],
+      "title": "花結び",
+      "chinese_title": "",
+      "pronunciation": "はなむすび",
+      "creatorArtistId": 213,
+      "lyricist": "栗山夕璃",
+      "composer": "栗山夕璃",
+      "arranger": "栗山夕璃",
+      "dancerCount": 1,
+      "selfDancerPosition": 0,
+      "assetbundleName": "jacket_s_695",
+      "publishedAt": 1764482400000,
+      "releasedAt": 1764428400000,
+      "fillerSec": 8.66670036315918,
+      "infos": null,
+      "isNewlyWrittenMusic": true,
+      "isFullLength": false,
+      "difficulties": {
+        "easy": {
+          "playLevel": 8,
+          "releaseConditionId": 0,
+          "totalNoteCount": 351
+        },
+        "expert": {
+          "playLevel": 26,
+          "releaseConditionId": 0,
+          "totalNoteCount": 989
+        },
+        "hard": {
+          "playLevel": 18,
+          "releaseConditionId": 0,
+          "totalNoteCount": 669
+        },
+        "master": {
+          "playLevel": 29,
+          "releaseConditionId": 0,
+          "totalNoteCount": 1106
+        },
+        "normal": {
+          "playLevel": 13,
+          "releaseConditionId": 0,
+          "totalNoteCount": 399
+        }
+      }
+    }
+  ],
+  "total": 13
+}

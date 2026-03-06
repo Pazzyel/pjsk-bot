@@ -19,7 +19,10 @@ func NewContext() *ApplicationContext {
 	// 加载配置
 	cfg, err := config.LoadConfig("resources/config")
 	if err != nil {
-		panic("加载配置文件失败: " + err.Error())
+		cfg, err = config.LoadConfig("server/resources/config")
+		if err != nil {
+			panic("加载配置文件失败: " + err.Error())
+		}
 	}
 	if cfg == nil {
 		panic("配置文件为空")
