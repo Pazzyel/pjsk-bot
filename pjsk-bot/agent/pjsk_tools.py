@@ -24,6 +24,7 @@ def search_music(
     page_size: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Search songs from PJSK server API.
+       NOTICE: IF THE ARGUMENT IS OPTIONAL AND YOU DON'T NEED IT, YOU SHOULD NOT INPUT THE PARAMETER
 
     Calls:
         GET /pjsk/search
@@ -58,7 +59,6 @@ def search_music(
     resp.raise_for_status()
     return resp.json()
 
-
 def get_chart(song_id: str, level: str) -> bytes:
     """Fetch chart image bytes.
 
@@ -73,7 +73,6 @@ def get_chart(song_id: str, level: str) -> bytes:
     )
     resp.raise_for_status()
     return resp.content
-
 
 def get_jacket(song_id: str) -> bytes:
     """Fetch jacket image bytes.
@@ -102,3 +101,7 @@ def update_music() -> Dict[str, Any]:
     resp = requests.post(f"{_server_base_url()}/pjsk/update", timeout=120)
     resp.raise_for_status()
     return resp.json()
+
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
