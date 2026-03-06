@@ -3,6 +3,7 @@ package service
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,6 +12,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/elastic/go-elasticsearch/v8"
 )
 
 type SearchOptions struct {
@@ -265,12 +268,20 @@ func (p *PJSKService) SearchMusicInfos(options SearchOptions) ([]MusicInfo, int6
 		return nil, 0, err
 	}
 
-	resp, err := p.esRequest(http.MethodGet, fmt.Sprintf("/%s/_search", p.getMusicIndexName()), bytes.NewReader(payload))
+	esClient, err := p.getESClient()
+	if err != nil {
+		return nil, 0, err
+	}
+	resp, err := esClient.Search(
+		esClient.Search.WithContext(context.Background()),
+		esClient.Search.WithIndex(p.getMusicIndexName()),
+		esClient.Search.WithBody(bytes.NewReader(payload)),
+	)
 	if err != nil {
 		return nil, 0, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode >= http.StatusBadRequest {
+	if resp.IsError() {
 		body, _ := io.ReadAll(resp.Body)
 		return nil, 0, fmt.Errorf("es search failed: %s", string(body))
 	}
@@ -345,29 +356,29 @@ func (p *PJSKService) getMusicIndexName() string {
 	return p.pjskConfig.Elasticsearch.Index
 }
 
-func (p *PJSKService) esRequest(method string, uri string, body io.Reader) (*http.Response, error) {
+func (p *PJSKService) getESClient() (*elasticsearch.Client, error) {
 	address := strings.TrimSpace(p.pjskConfig.Elasticsearch.Address)
 	if address == "" {
 		return nil, errors.New("elasticsearch address is empty")
 	}
-	address = strings.TrimRight(address, "/")
-
-	req, err := http.NewRequest(method, address+uri, body)
-	if err != nil {
-		return nil, err
-	}
-	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	client := &http.Client{Timeout: 60 * time.Second}
-	return client.Do(req)
+	return elasticsearch.NewClient(elasticsearch.Config{
+		Addresses: []string{strings.TrimRight(address, "/")},
+	})
 }
 
+// 重建ES索引，其实就是吧原来的索引库全删了再建一个新的空索引，在更新的时候用
 func (p *PJSKService) recreateMusicIndex() error {
+	esClient, err := p.getESClient()
+	if err != nil {
+		return err
+	}
 	index := p.getMusicIndexName()
 
-	deleteResp, err := p.esRequest(http.MethodDelete, "/"+index, nil)
+	deleteResp, err := esClient.Indices.Delete(
+		[]string{index},
+		esClient.Indices.Delete.WithContext(context.Background()),
+		esClient.Indices.Delete.WithIgnoreUnavailable(true),
+	)
 	if err != nil {
 		return err
 	}
@@ -400,12 +411,16 @@ func (p *PJSKService) recreateMusicIndex() error {
 		return err
 	}
 
-	createResp, err := p.esRequest(http.MethodPut, "/"+index, bytes.NewReader(payload))
+	createResp, err := esClient.Indices.Create(
+		index,
+		esClient.Indices.Create.WithContext(context.Background()),
+		esClient.Indices.Create.WithBody(bytes.NewReader(payload)),
+	)
 	if err != nil {
 		return err
 	}
 	defer createResp.Body.Close()
-	if createResp.StatusCode >= http.StatusBadRequest {
+	if createResp.IsError() {
 		body, _ := io.ReadAll(createResp.Body)
 		return fmt.Errorf("create es index failed: %s", string(body))
 	}
@@ -413,6 +428,10 @@ func (p *PJSKService) recreateMusicIndex() error {
 }
 
 func (p *PJSKService) bulkIndexMusicInfos(infos []MusicInfo) error {
+	esClient, err := p.getESClient()
+	if err != nil {
+		return err
+	}
 	var builder strings.Builder
 	writer := bufio.NewWriter(&builder)
 	index := p.getMusicIndexName()
@@ -436,12 +455,15 @@ func (p *PJSKService) bulkIndexMusicInfos(infos []MusicInfo) error {
 		return err
 	}
 
-	resp, err := p.esRequest(http.MethodPost, "/_bulk", strings.NewReader(builder.String()))
+	resp, err := esClient.Bulk(
+		strings.NewReader(builder.String()),
+		esClient.Bulk.WithContext(context.Background()),
+	)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode >= http.StatusBadRequest {
+	if resp.IsError() {
 		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("bulk index failed: %s", string(body))
 	}
