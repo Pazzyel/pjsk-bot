@@ -1,0 +1,56 @@
+{
+  "id": 521,
+  "seq": 99999567,
+  "releaseConditionId": 5,
+  "categories": [
+    {
+      "musicCategoryName": "mv"
+    }
+  ],
+  "title": "オーバーライド", // 歌曲名称
+  "chinese_title": "",// 中文名称，没有对应名称时，此字段留空
+  "pronunciation": "おーばーらいど",
+  "creatorArtistId": 244,
+  "lyricist": "吉田夜世", // 作词者
+  "composer": "吉田夜世", // 作曲者
+  "arranger": "吉田夜世", // 编曲者
+  "dancerCount": 1,
+  "selfDancerPosition": 0,
+  "assetbundleName": "jacket_s_521",
+  "publishedAt": 1771743600000,
+  "releasedAt": 1771743600000,
+  "fillerSec": 9.0,
+  "infos": [],
+  "isNewlyWrittenMusic": false,
+  "isFullLength": false,
+  "difficulties": { // 歌曲的各种难度
+    "easy": { // easy难度
+      "playLevel": 9, // 具体难度等级
+      "releaseConditionId": 1,
+      "totalNoteCount": 247 // 总物量
+    },
+    "normal": {
+      "playLevel": 14,
+      "releaseConditionId": 1,
+      "totalNoteCount": 369
+    },
+    "hard": {
+      "playLevel": 18,
+      "releaseConditionId": 1,
+      "totalNoteCount": 700
+    },
+    "expert": {
+      "playLevel": 26,
+      "releaseConditionId": 1,
+      "totalNoteCount": 1004
+    },
+    "master": {
+      "playLevel": 31,
+      "releaseConditionId": 40521,
+      "totalNoteCount": 1265
+    },
+    "append": {// 并不是所有歌曲都要append难度
+
+    }
+  }
+}

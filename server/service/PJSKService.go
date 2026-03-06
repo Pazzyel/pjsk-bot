@@ -6,21 +6,26 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/draw"
 	"image/png"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-	"server/config"
+	"pjsk-bot/server/config"
+	"regexp"
+
+	"github.com/srwiley/oksvg"
+	"github.com/srwiley/rasterx"
 )
 
 type PJSKService struct {
 	pjskConfig *config.PJSKConfig
 }
 
-func (p *PJSKService) Construct(cfg *config.PJSKConfig) {
+func NewPJSKService(cfg *config.PJSKConfig) *PJSKService {
+	p := &PJSKService{cfg}
 	p.pjskConfig = cfg
+	return p
 }
 
 func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
@@ -49,13 +54,13 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 
 	// 文件不存在则从网络获取
 	if !checkLevel(level) {
-		return nil, errors.New("难度错误，仅支持Expert: exp, Master: mst, Append: apd，必须拼写正确")	
+		return nil, errors.New("难度错误，仅支持easy,normal,hard,expert,append，必须拼写正确")
 	}
 
 	// 处理谱面图
-	data, err := http.Get(p.pjskConfig.PJSK.Charts.RequestPath + id + level + ".png")
+	data, err := http.Get(p.pjskConfig.PJSK.Charts.RequestPath + id + "/" + level + ".svg")
 	if err != nil {
-		return nil, err//ors.New("获取谱面图失败")
+		return nil, err //ors.New("获取谱面图失败")
 	}
 	defer data.Body.Close()
 
@@ -64,63 +69,61 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 		return nil, errors.New("未找到该谱面，请检查ID和难度是否正确")
 	}
 
-	chart, err := io.ReadAll(data.Body)
+	svg, err := io.ReadAll(data.Body)
 	if err != nil {
-		return nil, err//ors.New("读取谱面图失败")
-	}
-	//处理背景图
-	bg, err := http.Get("https://sdvx.in/prsk/bg/" + id + "bg" + ".png")
-	if err != nil {
-		return nil, err//ors.New("获取背景图失败")
-	}
-	defer bg.Body.Close()
-	background, err := io.ReadAll(bg.Body)
-	if err != nil {
-		return nil, err//ors.New("读取背景图失败")
+		return nil, err //ors.New("读取谱面图失败")
 	}
 
-	// 合并两张图
-	chartImage, err := png.Decode(bytes.NewReader(chart))
+	//转换SVG，替换原版的紫色背景
+	svgStr := string(svg)
+	svgStr = replaceCSSColor(svgStr, ".lane", "#555555")
+	svgStr = replaceCSSColor(svgStr, ".background", "#333333")
+	svgStr = replaceCSSColor(svgStr, ".meta", "#000000")
+
+	//把SVG渲染成PNG字节流
+	icon, err := oksvg.ReadIconStream(bytes.NewReader([]byte(svgStr)))
 	if err != nil {
-		return nil, err//ors.New("解析谱面图失败")
+		return nil, errors.New("渲染PNG图片失败")
 	}
-	backgroundImage, err := png.Decode(bytes.NewReader(background))
-	if err != nil {
-		return nil, err//ors.New("解析背景图失败")
-	}
-	// 先画背景再画前景
-	mergeImage := image.NewRGBA(chartImage.Bounds())
-	draw.Draw(mergeImage, backgroundImage.Bounds(), backgroundImage, image.Point{}, draw.Src)
-	draw.Draw(mergeImage, chartImage.Bounds(), chartImage, image.Point{}, draw.Over)
-	// 把透明像素转为黑色
-	transparentToBlack(mergeImage)
+
+	width := int(icon.ViewBox.W)
+	height := int(icon.ViewBox.H)
+	image := image.NewRGBA(image.Rect(0, 0, width, height))
+	scanner := rasterx.NewScannerGV(width, height, image, image.Bounds())
+	raster := rasterx.NewDasher(width, height, scanner)
+	icon.Draw(raster, 1.0)
 
 	// 编码为PNG格式
 	var buf bytes.Buffer
-	err = png.Encode(&buf, mergeImage)
+	err = png.Encode(&buf, image)
 	if err != nil {
-		return nil, err//ors.New("合并图片失败")
+		return nil, err //ors.New("合并图片失败")
 	}
-	mergeBytes := buf.Bytes()
-
+	imageBytes := buf.Bytes()
 
 	// 将图片保存到本地
-	err = os.WriteFile(path, mergeBytes, 0644)
+	err = os.WriteFile(path, imageBytes, 0644)
 	if err != nil {
 		return nil, errors.New("保存图片失败")
 	}
 
-	return mergeBytes, nil
+	return imageBytes, nil
 }
 
-// 检查难度是否合法
+// 检查难度
 func checkLevel(level string) bool {
 	switch level {
-	case "exp":
+	case "easy":
 		return true
-	case "mst":
+	case "normal":
 		return true
-	case "apd":
+	case "hard":
+		return true
+	case "expert":
+		return true
+	case "mater":
+		return true
+	case "append":
 		return true
 	default:
 		return false
@@ -141,6 +144,15 @@ func checkFile(path string) (bool, error) {
 	}
 }
 
+// 把svg文件的指定标签的fill值替换成指定
+func replaceCSSColor(svg, selector, color string) string {
+	re := regexp.MustCompile(fmt.Sprintf(`(%s\s*\{[^}]*?)fill\s*:\s*#[0-9a-fA-F]{3,8}([^}]*\})`, regexp.QuoteMeta(selector)))
+	if re.MatchString(svg) {
+		return re.ReplaceAllString(svg, fmt.Sprintf("${1}fill: %s${2}", color))
+	}
+	return svg
+}
+
 // 把源图片透明像素转为黑色
 func transparentToBlack(srcPtr *image.RGBA) {
 	src := *srcPtr
@@ -152,12 +164,10 @@ func transparentToBlack(srcPtr *image.RGBA) {
 			if c.A == 0 {
 				// 透明像素 → 黑色
 				src.Set(x, y, color.RGBA{0, 0, 0, 255})
-			} 
+			}
 		}
 	}
 }
-
-
 
 // 获取歌曲封面
 func (p *PJSKService) GetJackets(id string) ([]byte, error) {
@@ -170,7 +180,7 @@ func (p *PJSKService) GetJackets(id string) ([]byte, error) {
 	}
 
 	// 文件名格式：{id}.png，例如 001.png
-	fileName := id + ".png"
+	fileName := id + ".webp"
 	path := filepath.Join(dir, fileName)
 	exists, err := checkFile(path)
 	if err != nil {
@@ -187,9 +197,10 @@ func (p *PJSKService) GetJackets(id string) ([]byte, error) {
 	}
 
 	// 文件不存在则从网络获取
-	data, err := http.Get(p.pjskConfig.PJSK.Jackets.RequestPath + id + ".png")
+	idFormat := "jacket_s_" + id
+	data, err := http.Get(p.pjskConfig.PJSK.Jackets.RequestPath + idFormat + "/" + idFormat + ".webp")
 	if err != nil {
-		return nil, err//ors.New("获取封面图失败")
+		return nil, err //ors.New("获取封面图失败")
 	}
 	defer data.Body.Close()
 
@@ -199,7 +210,7 @@ func (p *PJSKService) GetJackets(id string) ([]byte, error) {
 	}
 	jacket, err := io.ReadAll(data.Body)
 	if err != nil {
-		return nil, err//ors.New("读取封面图失败")
+		return nil, err //ors.New("读取封面图失败")
 	}
 
 	// 将图片保存到本地

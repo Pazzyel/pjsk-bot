@@ -1,3 +1,4 @@
 server/resources/images
 START.md
 server.exe*
+/bot/resources/application.yaml

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"server/container"
+	"pjsk-bot/server/context"
 )
 
 func main() {
-	appContext := container.CreateContext()
-	pjskController := appContext.GetPJSKController()
-	pjskController.Register()
+	context.NewContext().Run()
 }

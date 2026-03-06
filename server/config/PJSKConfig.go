@@ -19,6 +19,17 @@ type PJSKConfig struct {
 			RequestPath string `mapstructure:"request_path"`
 			SavePath    string `mapstructure:"save_path"`
 		} `mapstructure:"jackets"`
+		Infos struct {
+			RequestPath string `mapstructure:"request_path"`
+		} `mapstructure:"infos"`
+		Difficulties struct {
+			RequestPath string `mapstructure:"request_path"`
+		} `mapstructure:"difficulties"`
+		Titles struct {
+			RequestPath struct {
+				Chinese string `mapstructure:"Chinese"`
+			} `mapstructure:"request_path"`
+		} `mapstructure:"titles"`
 	} `mapstructure:"pjsk"`
 }
 
@@ -32,9 +43,9 @@ func LoadConfig(path string) (*PJSKConfig, error) {
 	// 设置默认值
 	vp.SetDefault("server.host", "127.0.0.1")
 	vp.SetDefault("server.port", 9470)
-	vp.SetDefault("pjsk.charts.request-path", "https://sdvx.in/prsk/obj/data")
+	vp.SetDefault("pjsk.charts.request-path", "https://storage.sekai.best/sekai-music-charts/jp/")
 	vp.SetDefault("pjsk.charts.save-path", "resources/images/charts")
-	vp.SetDefault("pjsk.jackets.request-path", "https://sdvx.in/prsk/jacket/")
+	vp.SetDefault("pjsk.jackets.request-path", "https://storage.sekai.best/sekai-jp-assets/music/jacket/")
 	vp.SetDefault("pjsk.jackets.save-path", "resources/images/jackets")
 
 	// 自动环境变量

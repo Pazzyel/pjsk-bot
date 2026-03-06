@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"server/config"
-	"server/service"
+	"pjsk-bot/server/config"
+	"pjsk-bot/server/service"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -12,16 +12,18 @@ import (
 type PJSKService = service.PJSKService
 type PJSKConfig = config.PJSKConfig
 
-type PJSKController struct{
-	r *gin.Engine
-	pjskConfig *PJSKConfig
+type PJSKController struct {
+	r           *gin.Engine
+	pjskConfig  *PJSKConfig
 	pjskService *PJSKService
 }
 
-func (p *PJSKController) Construct(rP *gin.Engine, cfg  *PJSKConfig, pjskServiceP *PJSKService) {
+func NewPJSKController(rP *gin.Engine, cfg *PJSKConfig, pjskServiceP *PJSKService) *PJSKController {
+	p := &PJSKController{}
 	p.r = rP
 	p.pjskConfig = cfg
 	p.pjskService = pjskServiceP
+	return p
 }
 
 func (p *PJSKController) Register() {
