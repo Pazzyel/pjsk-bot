@@ -10,6 +10,10 @@ type PJSKConfig struct {
 	Server struct {
 		Port int `mapstructure:"port"`
 	} `mapstructure:"server"`
+	Elasticsearch struct {
+		Address string `mapstructure:"address"`
+		Index   string `mapstructure:"index"`
+	} `mapstructure:"elasticsearch"`
 	PJSK struct {
 		Charts struct {
 			RequestPath string `mapstructure:"request_path"`
@@ -47,6 +51,8 @@ func LoadConfig(path string) (*PJSKConfig, error) {
 	vp.SetDefault("pjsk.charts.save-path", "resources/images/charts")
 	vp.SetDefault("pjsk.jackets.request-path", "https://storage.sekai.best/sekai-jp-assets/music/jacket/")
 	vp.SetDefault("pjsk.jackets.save-path", "resources/images/jackets")
+	vp.SetDefault("elasticsearch.address", "http://127.0.0.1:9200")
+	vp.SetDefault("elasticsearch.index", "pjsk_music_infos")
 
 	// 自动环境变量
 	vp.AutomaticEnv()

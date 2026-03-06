@@ -1,6 +1,10 @@
 server:
   port: 9470
 
+elasticsearch:
+  address: http://127.0.0.1:9200
+  index: pjsk_music_infos
+
 pjsk:
   charts:
     request_path: https://storage.sekai.best/sekai-music-charts/jp/
