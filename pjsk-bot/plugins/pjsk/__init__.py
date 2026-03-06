@@ -1,8 +1,22 @@
 import base64
-from nonebot import get_driver
+from nonebot import get_driver, on_notice, on_message
 from nonebot.plugin import PluginMetadata, on_command
-import requests
-from nonebot.adapters.onebot.v11 import MessageSegment, Bot, Event
+import requests, psutil
+from nonebot.adapters.onebot.v11 import (
+    MessageSegment,
+    Bot,
+    Event,
+    MessageEvent,
+    GroupMessageEvent,
+)
+
+import asyncio
+
+import sys
+from pathlib import Path
+# Put `pjsk-bot/` on sys.path so `from agent...` resolves correctly.
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from agent.pjsk_agent import PJSKAgent
 
 from .config import Config
 
@@ -97,3 +111,49 @@ async def handle_echo(bot: Bot, event: Event):
     args = text.split()
     arg0 = args[0] if len(args) > 0 else ""
     await echo.send(arg0)
+
+groupe_poke = on_notice()
+
+@groupe_poke.handle()
+async def handle_poke(bot: Bot, event: Event):
+    print("收到戳一戳事件")
+    # 只监听机器人被戳
+    if event.target_id == event.self_id:
+        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu = str(psutil.cpu_count(logical=False)) + "/" + str(psutil.cpu_count(logical=True))
+        memory_usage = psutil.virtual_memory().percent
+        memory = format((psutil.virtual_memory().used / 1000000000),".3f") + "GB" + " / " + format((psutil.virtual_memory().total / 1000000000),".3f") + "GB"
+        disk_usage = psutil.disk_usage('/').percent
+        disk = format((psutil.disk_usage('/').used / 1000000000),".3f") + "GB" + " / " + format((psutil.disk_usage('/').total / 1000000000),".3f") + "GB"
+        print("执行戳一戳响应")
+        await groupe_poke.send("cpu: " + cpu + " 使用率: " + str(cpu_usage) + "%\n" +
+                               "内存: " + memory + " 使用率: " + str(memory_usage) + "%\n" +
+                               "磁盘: " + disk + " 使用率: " + str(disk_usage) + "%")
+    else:
+        print("响应未完成")
+
+agent: PJSKAgent = PJSKAgent()
+
+async def at_bot_rule(bot: Bot, event: Event) -> bool:
+    if not isinstance(event, MessageEvent):
+        return False
+    if not isinstance(event, GroupMessageEvent):
+        return True
+    for seg in event.get_message():
+        if seg.type == "at" and str(seg.data.get("qq")) == str(event.self_id):
+            return True
+    return False
+
+
+question = on_command("chat")
+@question.handle()
+async def handle_question(bot: Bot, event: Event):
+    text = event.get_message().extract_plain_text().strip()
+    print("问题是：" + text)
+    result : str | bytes = await agent.ask(text)
+    if (isinstance(result,bytes)):
+        await question.send(MessageSegment.image("base64://" + base64.b64encode(result).decode()))
+    elif (isinstance(result,str)):
+        await question.send(result)
+    else:
+        await question.send("模型不太聪明，自己查吧")
