@@ -1,21 +1,16 @@
 package service
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"image"
 	"image/color"
-	"image/png"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"pjsk-bot/server/config"
 	"regexp"
-
-	"github.com/srwiley/oksvg"
-	"github.com/srwiley/rasterx"
 )
 
 type PJSKService struct {
@@ -54,11 +49,11 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 
 	// 文件不存在则从网络获取
 	if !checkLevel(level) {
-		return nil, errors.New("难度错误，仅支持easy,normal,hard,expert,append，必须拼写正确")
+		return nil, errors.New("难度错误，仅支持easy,normal,hard,expert,master,append，必须拼写正确")
 	}
 
 	// 处理谱面图
-	data, err := http.Get(p.pjskConfig.PJSK.Charts.RequestPath + id + "/" + level + ".svg")
+	data, err := http.Get(p.pjskConfig.PJSK.Charts.RequestPath + id + "/" + level + ".png")
 	if err != nil {
 		return nil, err //ors.New("获取谱面图失败")
 	}
@@ -69,44 +64,55 @@ func (p *PJSKService) GetCharts(id string, level string) ([]byte, error) {
 		return nil, errors.New("未找到该谱面，请检查ID和难度是否正确")
 	}
 
-	svg, err := io.ReadAll(data.Body)
-	if err != nil {
-		return nil, err //ors.New("读取谱面图失败")
-	}
+	// oksvg好像有点问题了，之前没有的，会只渲染一部分
+	/*
+		svg, err := io.ReadAll(data.Body)
+		if err != nil {
+			return nil, err //ors.New("读取谱面图失败")
+		}
 
-	//转换SVG，替换原版的紫色背景
-	svgStr := string(svg)
-	svgStr = replaceCSSColor(svgStr, ".lane", "#555555")
-	svgStr = replaceCSSColor(svgStr, ".background", "#333333")
-	svgStr = replaceCSSColor(svgStr, ".meta", "#000000")
+		//转换SVG，替换原版的紫色背景
+		svgStr := string(svg)
+		svgStr = replaceCSSColor(svgStr, ".lane", "#555555")
+		svgStr = replaceCSSColor(svgStr, ".background", "#333333")
+		svgStr = replaceCSSColor(svgStr, ".meta", "#000000")
 
-	//把SVG渲染成PNG字节流
-	icon, err := oksvg.ReadIconStream(bytes.NewReader([]byte(svgStr)))
-	if err != nil {
-		return nil, errors.New("渲染PNG图片失败")
-	}
+		//把SVG渲染成PNG字节流
+		icon, err := oksvg.ReadIconStream(bytes.NewReader([]byte(svgStr)))
+		if err != nil {
+			return nil, errors.New("渲染PNG图片失败")
+		}
 
-	width := int(icon.ViewBox.W)
-	height := int(icon.ViewBox.H)
-	image := image.NewRGBA(image.Rect(0, 0, width, height))
-	scanner := rasterx.NewScannerGV(width, height, image, image.Bounds())
-	raster := rasterx.NewDasher(width, height, scanner)
-	icon.Draw(raster, 1.0)
+		width := int(icon.ViewBox.W)
+		height := int(icon.ViewBox.H)
+		image := image.NewRGBA(image.Rect(0, 0, width, height))
+		scanner := rasterx.NewScannerGV(width, height, image, image.Bounds())
+		raster := rasterx.NewDasher(width, height, scanner)
+		icon.Draw(raster, 1.0)
 
-	// 编码为PNG格式
-	var buf bytes.Buffer
-	err = png.Encode(&buf, image)
-	if err != nil {
-		return nil, err //ors.New("合并图片失败")
-	}
-	imageBytes := buf.Bytes()
+		// 编码为PNG格式
+		var buf bytes.Buffer
+		err = png.Encode(&buf, image)
+		if err != nil {
+			return nil, err //ors.New("合并图片失败")
+		}
+		imageBytes := buf.Bytes()
 
-	// 将图片保存到本地
+		// 将图片保存到本地
+		err = os.WriteFile(path, imageBytes, 0644)
+		if err != nil {
+			return nil, errors.New("保存图片失败")
+		}
+
+		return imageBytes, nil
+	*/
+	imageBytes, err := io.ReadAll(data.Body)
 	err = os.WriteFile(path, imageBytes, 0644)
 	if err != nil {
 		return nil, errors.New("保存图片失败")
 	}
 
+	// 直接看png吧，粉色背景挺好的
 	return imageBytes, nil
 }
 
@@ -121,7 +127,7 @@ func checkLevel(level string) bool {
 		return true
 	case "expert":
 		return true
-	case "mater":
+	case "master":
 		return true
 	case "append":
 		return true

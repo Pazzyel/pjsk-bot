@@ -39,9 +39,9 @@ func (p *PJSKController) Register() {
 func (p *PJSKController) getCharts() {
 	p.r.GET("/pjsk/charts", func(c *gin.Context) {
 		id := c.Query("id")
-		if len(id) < 3 {
+		if len(id) < 4 {
 			idInt, _ := strconv.Atoi(id)
-			id = fmt.Sprintf("%03d", idInt)
+			id = fmt.Sprintf("%04d", idInt)
 		}
 		level := c.Query("level")
 		data, err := p.pjskService.GetCharts(id, level)
