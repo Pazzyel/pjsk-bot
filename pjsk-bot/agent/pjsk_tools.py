@@ -1,17 +1,22 @@
 from __future__ import annotations
 
-import os
+import sys
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 import requests
 from fastmcp import FastMCP
+
+# Ensure `pjsk-bot/` is importable when running this file directly.
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from config import get_server_base_url
 
 
 mcp = FastMCP("pjsk-tools")
 
 
 def _server_base_url() -> str:
-    return os.getenv("PJSK_SERVER_BASE_URL", "http://127.0.0.1:9470").rstrip("/")
+    return get_server_base_url()
 
 
 @mcp.tool

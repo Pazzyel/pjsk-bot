@@ -1,0 +1,21 @@
+server:
+  port: 9470
+
+elasticsearch:
+  address: http://127.0.0.1:9200
+  index: pjsk_music_infos
+
+pjsk:
+  charts:
+    request_path: https://storage.sekai.best/sekai-music-charts/jp/
+    save_path: resources/images/charts
+  jackets:
+    request_path: https://storage.sekai.best/sekai-jp-assets/music/jacket/
+    save_path: resources/images/jackets
+  infos:
+    request_path: https://sekai-world.github.io/sekai-master-db-diff/musics.json
+  difficulties:
+    request_path: https://sekai-world.github.io/sekai-master-db-diff/musicDifficulties.json
+  titles:
+    request_path:
+      Chinese: https://i18n-json.sekai.best/zh-CN/music_titles.json

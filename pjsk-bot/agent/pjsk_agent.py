@@ -13,7 +13,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
 
-from pjsk_tools import get_chart, get_jacket
+from .pjsk_tools import get_chart, get_jacket
+from config import get_llm_base_url, get_llm_model
 
 
 class PJSKAgent:
@@ -30,10 +31,10 @@ class PJSKAgent:
         )
         self.tools = asyncio.run(self.mcp_client.get_tools(server_name="pjsk"))
         self.model = ChatOpenAI(
-            model="qwen3.5-plus",
+            model=get_llm_model(),
             temperature=0.2,
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-            api_key=os.environ["DASHSCOPE_API_KEY"]
+            base_url=get_llm_base_url(),
+            api_key=os.environ["OPENAI_API_KEY"]
         )
         self.system_prompt = (
             "你是一个PJSK（游戏：世界计划：缤纷舞台）助手。"
@@ -76,6 +77,7 @@ class PJSKAgent:
 
     async def ask(self, user_input: str) -> str | bytes:
         text = user_input.strip()
+        print("Agent收到了问题：" + user_input)
         if not text:
             return "Please provide a question."
 

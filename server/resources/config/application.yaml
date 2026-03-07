@@ -2,7 +2,7 @@ server:
   port: 9470
 
 elasticsearch:
-  address: http://127.0.0.1:9200
+  address: http://elasticsearch:9200
   index: pjsk_music_infos
 
 pjsk:

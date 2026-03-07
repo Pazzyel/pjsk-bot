@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
+    container_name: pjsk-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - pjsk-net
+    restart: unless-stopped
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: pjsk-server
+    working_dir: /app/server
+    depends_on:
+      - elasticsearch
+    ports:
+      - "9470:9470"
+    networks:
+      - pjsk-net
+    restart: unless-stopped
+
+  nonebot:
+    build:
+      context: .
+      dockerfile: Dockerfile.nonebot
+    container_name: pjsk-nonebot
+    working_dir: /app
+    env_file:
+      - .env.prod
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OPENAI_API_KEY=${YOUR_OPENAI_API_KEY}
+    volumes:
+      - ./:/app
+    depends_on:
+      - server
+      - elasticsearch
+    ports:
+      - "9350:9350"
+    networks:
+      - pjsk-net
+    restart: unless-stopped
+
+  napcat:
+    image: mlikiowa/napcat-docker:latest
+    container_name: pjsk-napcat
+    depends_on:
+      - nonebot
+    ports:
+      - "6099:6099"
+    volumes:
+      - ./napcat:/app/napcat
+    networks:
+      - pjsk-net
+    restart: unless-stopped
+
+volumes:
+  es-data:
+
+networks:
+  pjsk-net:
+    name: pjsk-net

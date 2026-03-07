@@ -1,0 +1,16 @@
+FROM debian:bookworm-slim
+
+WORKDIR /app/server
+
+# Install CA bundle once at build time to fix TLS cert verification.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY server /app/server
+RUN chmod +x /app/server/server
+
+EXPOSE 9470
+
+CMD ["/app/server/server"]

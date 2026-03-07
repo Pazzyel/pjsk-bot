@@ -1,0 +1,6 @@
+server:
+  base_url: "http://server:9470"
+
+llm:
+  model: "GLM-5"
+  base_url: "https://api.edgefn.net/v1"
